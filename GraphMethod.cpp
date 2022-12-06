@@ -164,7 +164,6 @@ bool Kruskal(Graph* graph)
 
     vector<pair<int, pair<int, int>>> *LIST = new vector<pair<int, pair<int, int>>>;
     pair<int, pair<int, int>> TEMP;
-    int NUM = 0;
     //put all the endges into vector to sort
     for (int i = 1; i < SIZE; i++)
     {
@@ -172,11 +171,12 @@ bool Kruskal(Graph* graph)
             if(VERTEX[i][j]!=0){
                 TEMP = make_pair(VERTEX[i][j], make_pair(i, j));
                 LIST->push_back(TEMP); //put edges information into vector
-                NUM++; //count edge of graph
             }
         }
     }
-    InsertionSort(LIST, 0, 9);
+    int NUM = LIST->size();
+
+    QuickSort(LIST, 0, NUM-1);
 
     // delete[] VERTEX;
     return true;
@@ -210,6 +210,42 @@ void InsertionSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
             else
                 break;
         }
-        LIST->at(j+1) = TEMP;
+        LIST->at(j+1) = TEMP; //set TEMP
+    }
+}
+
+void QuickSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
+{
+    if(start<end){
+        if(end-start+1<=6){
+            InsertionSort(LIST, start, end);
+        }
+        else{
+            pair<int, pair<int, int>> TEMP;
+            //set pivot for first values
+            int pivot = LIST->at(start).first;
+            int i = start + 1;
+            int j = end;
+
+            while(i<j){
+                while (LIST->at(i).first < pivot)
+                    i++;
+                while (LIST->at(j).first > pivot)
+                    j--;
+                if(i<=j){
+                    TEMP = LIST->at(i);
+                    LIST->at(i) = LIST->at(j);
+                    LIST->at(j) = TEMP;
+                }
+            }
+            //move pivot into right position
+            TEMP = LIST->at(start);
+            LIST->at(start) = LIST->at(j);
+            LIST->at(j) = TEMP;
+
+            QuickSort(LIST, start, pivot - 1);
+            QuickSort(LIST, pivot + 1, end);
+        }
+
     }
 }
