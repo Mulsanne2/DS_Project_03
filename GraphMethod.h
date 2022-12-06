@@ -13,4 +13,7 @@ bool Dijkstra(Graph* graph, int vertex);
 bool Bellmanford(Graph* graph, int s_vertex, int e_vertex);
 bool FLOYD(Graph* graph);
 
+void InsertionSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end);
+void Insert(vector<pair<int, pair<int, int>>> *LIST, int NUM, int start, int end);
+
 #endif

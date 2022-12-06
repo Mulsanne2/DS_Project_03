@@ -50,37 +50,44 @@ void Manager::run(const char* command_txt){
 		else if (strcmp(str, "BFS") == 0)
 		{
 			str2 = strtok(NULL, " ");
-			if(str2==NULL){
+			if(str2==NULL)
+			{ // check start vertex
 				printErrorCode(300);
 				continue;
 			}
 			int Startvertex = stoi(str2);
-			if(!mBFS(Startvertex))
+			if(!mBFS(Startvertex)) //mBFS
 				printErrorCode(300);
 		}
 
 		else if (strcmp(str, "DFS") == 0)
 		{
 			str2 = strtok(NULL, " ");
-			if(str2==NULL){
+			if(str2==NULL){ //check start vertex
 				printErrorCode(400);
 				continue;
 			}
 			int Startvertex = stoi(str2);
-			if(!mDFS(Startvertex))
+			if(!mDFS(Startvertex)) //mDFS
 				printErrorCode(400);
 		}
 
 		else if (strcmp(str, "DFS_R") == 0)
 		{
 			str2 = strtok(NULL, " ");
-			if (str2 == NULL)
+			if (str2 == NULL) // check start vertex
 			{
 				printErrorCode(500);
 				continue;
 			}
 			int Startvertex = stoi(str2);
-			if (!mDFS_R(Startvertex))
+			if (!mDFS_R(Startvertex)) //mDFS_R
+				printErrorCode(500);
+		}
+
+		else if (strcmp(str, "KRUSKAL") == 0)
+		{
+			if (!mKRUSKAL())
 				printErrorCode(500);
 		}
 	}	
@@ -253,10 +260,15 @@ bool Manager::mDFS_R(int vertex)
 
 // }
 
-// bool Manager::mKRUSKAL()
-// {
+bool Manager::mKRUSKAL()
+{
+	//check if graph exist
+	if(!graph)
+		return false;
 
-// }
+	Kruskal(graph2);
+	return true;
+}
 
 // bool Manager::mBELLMANFORD(int s_vertex, int e_vertex)
 // {

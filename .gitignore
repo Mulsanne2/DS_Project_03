@@ -1,5 +1,7 @@
+.DS_Store
 .vscode
 command.dSYM
+graph_M.dSYM
 graph_L.dSYM
 GraphMethod.dSYM
 ListGraph.dSYM

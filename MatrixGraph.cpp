@@ -60,7 +60,7 @@ bool MatrixGraph::printGraph()
 	{
 		cout<<"["<<i<<"]";
 		fout << "[" << i << "]";
-		for(int j=0; j<m_Size && fout<<'\t'; j++)
+		for (int j = 0; j < m_Size && fout << '\t' && cout << '\t'; j++)
 		{
 			cout<<m_Mat[i][j];
 			fout << m_Mat[i][j];

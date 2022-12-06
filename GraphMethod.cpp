@@ -130,10 +130,57 @@ bool DFS_R(Graph* graph, vector<bool>* visit, int vertex)
     return true;
 }
 
-// bool Kruskal(Graph* graph)
-// {
+bool Kruskal(Graph* graph)
+{
+    graph->printGraph();
+    int SIZE = graph->getSize();
+    map<int, int> *MAP = new map<int, int>;
+    map<int, int>::iterator iter;
 
-// }
+    // int **VERTEX = new int *[SIZE];
+    // for (int i = 0; i < SIZE; i++)
+    // {
+    //     VERTEX[i] = new int[SIZE];
+    //     memset(VERTEX[i], 0, sizeof(int) * SIZE);
+    // }
+    int VERTEX[SIZE][SIZE];
+    //initial all the array into 0
+    for (int i = 0; i < SIZE; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
+        {
+            VERTEX[i][j] = 0;
+        }
+    }
+
+    //load the all the graph index
+    for (int i = 0; i < SIZE;i++){
+        MAP->clear();
+        graph->getAdjacentEdges(i, MAP);
+        for (iter = MAP->begin(); iter != MAP->end();iter++){
+            VERTEX[i][iter->first] = iter->second;
+        }
+    }
+
+    vector<pair<int, pair<int, int>>> *LIST = new vector<pair<int, pair<int, int>>>;
+    pair<int, pair<int, int>> TEMP;
+    int NUM = 0;
+    //put all the endges into vector to sort
+    for (int i = 1; i < SIZE; i++)
+    {
+        for (int j = 0; j < i;j++){
+            if(VERTEX[i][j]!=0){
+                TEMP = make_pair(VERTEX[i][j], make_pair(i, j));
+                LIST->push_back(TEMP); //put edges information into vector
+                NUM++; //count edge of graph
+            }
+        }
+    }
+    InsertionSort(LIST, 0, 9);
+
+    // delete[] VERTEX;
+    return true;
+}
 
 // bool Dijkstra(Graph* graph, int vertex)
 // {
@@ -149,3 +196,20 @@ bool DFS_R(Graph* graph, vector<bool>* visit, int vertex)
 // {
 
 // }
+
+void InsertionSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
+{   
+    int j;
+    pair<int, pair<int, int>> TEMP;
+    for (int i = start+1; i <= end; i++){
+        TEMP = LIST->at(i); //set first vertex
+
+        for (j = i - 1; j >= start;j--){ //check vertex from the behind
+            if(LIST->at(j).first > TEMP.first)
+                LIST->at(j + 1) = LIST->at(j);
+            else
+                break;
+        }
+        LIST->at(j+1) = TEMP;
+    }
+}
