@@ -105,33 +105,33 @@ bool DFS(Graph* graph, int vertex)
     return true;
 }
 
-bool DFS_R(Graph* graph, vector<bool>* visit, int vertex)
+bool DFS_R(Graph *graph, vector<bool> *visit, int vertex, ofstream *fout)
 {
-    ofstream fout;
-    fout.open("log.txt", ios::app);
+
     auto iter = visit->at(vertex);
     iter = true;
     bool temp;
     cout << vertex;
-    fout << vertex;
+    *fout << vertex;
     map<int, int> *Ad = new map<int, int>;
     graph->getAdjacentEdges(vertex, Ad); //get the adjacent edge of vertex
     for (map<int, int>::iterator iter2 = Ad->begin(); iter2 != Ad->end(); iter2++){
         temp = visit->at(iter2->first);
         if(!temp){
             cout << " -> ";
-            fout << " -> ";
-            DFS_R(graph, visit, iter2->first); // call DFS_R recursive
+            *fout << " -> ";
+            DFS_R(graph, visit, iter2->first, fout); // call DFS_R recursive
         }
     }
 
     delete Ad;
-    fout.close();
     return true;
 }
 
 bool Kruskal(Graph* graph)
 {
+    ofstream fout;
+    fout.open("log.txt", ios::app);
     graph->printGraph();
     int SIZE = graph->getSize();
     map<int, int> *MAP = new map<int, int>;
@@ -175,10 +175,95 @@ bool Kruskal(Graph* graph)
         }
     }
     int NUM = LIST->size();
-
+    
+    //Sort the edges with Quick Sort
     QuickSort(LIST, 0, NUM-1);
 
+    int VERTEX2[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
+        {
+            VERTEX2[i][j] = 0;
+        }
+    }
+    
+    pair<int, pair<int, int>> TEMP2;
+    int LENGTH = 0; //LENGTH of KRUSKAL
+    // initialize all the parents
+    int *Parent = new int[SIZE];
+    for (int i = 0; i < SIZE;i++)
+        Parent[i] = -1;
+
+    while(!LIST->empty()){
+        TEMP2 = LIST->at(0);
+        LIST->erase(LIST->begin());
+
+        int V1 = TEMP2.second.first;
+        int V2 = TEMP2.second.second;
+        int parent1 = FIND(Parent, V1);
+        int parent2 = FIND(Parent, V2);
+
+        if(parent1==-1&&parent2==-1){ //if both vertex doesn't have parent
+            UNION(Parent, V1, V2);
+            LENGTH += TEMP2.first;
+            VERTEX2[V1][V2] = TEMP2.first; //add on VERTEX2 array the result edge
+            VERTEX2[V2][V1] = TEMP2.first; // add on VERTEX2 array the result edge
+        }
+        else if(parent1 ==V2||parent2==V1) //if parent is same
+            continue;
+        else if(parent1!=parent2){
+            if(parent1==-1){
+                UNION(Parent, parent2, V1);
+                VERTEX2[V1][V2] = TEMP2.first; // add on VERTEX2 array the result edge
+                VERTEX2[V2][V1] = TEMP2.first; // add on VERTEX2 array the result edge
+            }
+            else{
+                UNION(Parent, parent1, V2);
+                VERTEX2[V1][V2] = TEMP2.first; // add on VERTEX2 array the result edge
+                VERTEX2[V2][V1] = TEMP2.first; // add on VERTEX2 array the result edge
+            }
+            LENGTH += TEMP2.first;
+        }
+    }
+
+    //check if graph is connected
+    int count = 0;
+    for (int i = 0; i < SIZE;i++){
+        if(Parent[i]==-1)
+            count++;
+    }
+
+    if(count!=1)
+        return false;
+
+    cout << "====== Kruskal =======" << endl;
+    fout << "====== Kruskal =======" << endl;
+    for (int i = 0; i < SIZE; i++)
+    {
+        cout << "[" << i << "] ";
+        fout << "[" << i << "] ";
+        for (int j = 0; j < SIZE; j++){
+            if(VERTEX2[i][j]!=0){
+                cout << j << "(" << VERTEX2[i][j] << ") ";
+                fout << j << "(" << VERTEX2[i][j] << ") ";
+            }
+        }
+        cout << endl;
+        fout << endl;
+    }
+    cout << "cost: " << LENGTH << endl;
+    fout << "cost: " << LENGTH << endl;
+    cout << "=====================" << endl
+         << endl;
+    fout << "=====================" << endl
+         << endl;
+    //!!!!!!!!!!MST못찾으면 false 반환할것 !!!
+
     // delete[] VERTEX;
+    delete[] Parent;
+    delete LIST;
+    fout.close();
     return true;
 }
 
@@ -228,9 +313,9 @@ void QuickSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
             int j = end;
 
             while(i<j){
-                while (LIST->at(i).first < pivot)
+                while (LIST->at(i).first < pivot) //find larger data from front
                     i++;
-                while (LIST->at(j).first > pivot)
+                while (LIST->at(j).first > pivot) //find smaller data from last
                     j--;
                 if(i<=j){
                     TEMP = LIST->at(i);
@@ -248,4 +333,20 @@ void QuickSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
         }
 
     }
+}
+
+int FIND(int *arr, int num)
+{
+    int inputnum = num;
+    while(arr[num]>=0) //check if it has root
+        num = arr[num];
+
+    if(num==inputnum)
+        return -1;
+    return num;
+}
+
+void UNION(int *arr, int v1, int v2)
+{
+    arr[v1] = v2; //connect edge
 }

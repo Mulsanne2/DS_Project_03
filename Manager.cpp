@@ -247,7 +247,7 @@ bool Manager::mDFS_R(int vertex)
 	cout << "======== DFS_R ========" << endl;
 	fout << "startvertex: " << vertex << endl;
 	cout << "startvertex: " << vertex << endl;
-	DFS_R(graph2, visited, vertex);
+	DFS_R(graph2, visited, vertex, &fout);
 	cout << "\n=====================" << endl
 		 << endl;
 	fout << "\n=====================" << endl
