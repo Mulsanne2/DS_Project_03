@@ -1,4 +1,4 @@
-LOAD graph_L.txt
+LOAD graph_L2.txt
 PRINT
 BFS 0
 DFS 0

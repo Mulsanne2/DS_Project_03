@@ -266,8 +266,10 @@ bool Manager::mKRUSKAL()
 	if(!graph)
 		return false;
 
-	Kruskal(graph2);
-	return true;
+	if(Kruskal(graph2))
+		return true;
+	else
+		return false;
 }
 
 // bool Manager::mBELLMANFORD(int s_vertex, int e_vertex)

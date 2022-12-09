@@ -132,7 +132,6 @@ bool Kruskal(Graph* graph)
 {
     ofstream fout;
     fout.open("log.txt", ios::app);
-    graph->printGraph();
     int SIZE = graph->getSize();
     map<int, int> *MAP = new map<int, int>;
     map<int, int>::iterator iter;
@@ -234,9 +233,11 @@ bool Kruskal(Graph* graph)
             count++;
     }
 
+    //check if graph isn't connected
     if(count!=1)
         return false;
 
+    //print the result
     cout << "====== Kruskal =======" << endl;
     fout << "====== Kruskal =======" << endl;
     for (int i = 0; i < SIZE; i++)
@@ -258,7 +259,6 @@ bool Kruskal(Graph* graph)
          << endl;
     fout << "=====================" << endl
          << endl;
-    //!!!!!!!!!!MST못찾으면 false 반환할것 !!!
 
     // delete[] VERTEX;
     delete[] Parent;

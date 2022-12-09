@@ -25,6 +25,10 @@ void ListGraph::insertEdge(int from, int to, int weight)
 {
 	auto iter = V.begin();
 
+	if(V.size()!=from){ //when before vector isn't connected which has only vertex
+		iter = V.insert(iter + from - 1, 0);
+	}
+
 	if(from!=beforeFrom){ //when from is diffrent
 		iter = V.insert(iter + from, m_List+from); //insert m_List into vector
 		m_List[from].insert(pair<int, int>(to, weight)); //make new From map
