@@ -1,6 +1,7 @@
-LOAD graph_L2.txt
+LOAD graph_L.txt
 PRINT
 BFS 0
 DFS 0
 DFS_R 2
 KRUSKAL
+DIJKSTRA 5

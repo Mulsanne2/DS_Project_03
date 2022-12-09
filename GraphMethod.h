@@ -1,6 +1,8 @@
 #ifndef _GRAPHMETHOD_H_
 #define _GRAPHMETHOD_H_
 
+#define MAX 999999
+
 #include "ListGraph.h"
 #include "MatrixGraph.h"
 // #include "vertexSet.h"

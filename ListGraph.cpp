@@ -23,15 +23,16 @@ void ListGraph::getAdjacentEdges(int vertex, map<int, int>* m)
 
 void ListGraph::insertEdge(int from, int to, int weight)
 {
-	auto iter = V.begin();
-
-	if(V.size()!=from){ //when before vector isn't connected which has only vertex
-		iter = V.insert(iter + from - 1, 0);
+	int SIZE = V.size();
+	//when before vector isn't connected which has only vertex
+	while(V.size()<from){
+		V.push_back(0);
 	}
 
 	if(from!=beforeFrom){ //when from is diffrent
-		iter = V.insert(iter + from, m_List+from); //insert m_List into vector
+		
 		m_List[from].insert(pair<int, int>(to, weight)); //make new From map
+		V.push_back(m_List+from);							 // insert m_List into vector
 		beforeFrom = from;
 	}
 	else //when from is same

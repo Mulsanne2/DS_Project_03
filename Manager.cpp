@@ -87,8 +87,21 @@ void Manager::run(const char* command_txt){
 
 		else if (strcmp(str, "KRUSKAL") == 0)
 		{
-			if (!mKRUSKAL())
-				printErrorCode(500);
+			if (!mKRUSKAL()) //KRUSKAL
+				printErrorCode(600);
+		}
+
+		else if (strcmp(str, "DIJKSTRA") == 0)
+		{
+			str2 = strtok(NULL, " ");
+			if (str2 == NULL) // check start vertex
+			{
+				printErrorCode(700);
+				continue;
+			}
+			int Startvertex = stoi(str2);
+			if (!mDIJKSTRA(Startvertex)) // mDFS_R
+				printErrorCode(700);
 		}
 	}	
 	fin.close();
@@ -252,13 +265,22 @@ bool Manager::mDFS_R(int vertex)
 		 << endl;
 	fout << "\n=====================" << endl
 		 << endl;
+	
+	delete visited;
 	return true;
 }
 
-// bool Manager::mDIJKSTRA(int vertex)
-// {
+bool Manager::mDIJKSTRA(int vertex)
+{
+	if (!graph) //check if graph exist
+		return false;
+	else if(vertex <0) //check vertex is available
+		return false;
 
-// }
+	if(Dijkstra(graph, vertex)) //Dijkstra
+		return true;
+	return false;
+}
 
 bool Manager::mKRUSKAL()
 {
@@ -266,7 +288,7 @@ bool Manager::mKRUSKAL()
 	if(!graph)
 		return false;
 
-	if(Kruskal(graph2))
+	if(Kruskal(graph2)) //Kruskal
 		return true;
 	else
 		return false;

@@ -2,6 +2,9 @@
 
 bool BFS(Graph* graph, int vertex)
 {
+    if (graph->getSize() < vertex) // check if vertex number is bigger than graph return false
+        return false;
+
     ofstream fout;
     fout.open("log.txt", ios::app);
     map<int, int> *Ad = new map<int, int>; // get adjacent List
@@ -53,6 +56,9 @@ bool BFS(Graph* graph, int vertex)
 
 bool DFS(Graph* graph, int vertex)
 {
+    if (graph->getSize() < vertex) // check if vertex number is bigger than graph return false
+        return false;
+
     ofstream fout;
     fout.open("log.txt", ios::app);
     map<int, int> *Ad = new map<int, int>; // get adjacent List
@@ -108,6 +114,9 @@ bool DFS(Graph* graph, int vertex)
 bool DFS_R(Graph *graph, vector<bool> *visit, int vertex, ofstream *fout)
 {
 
+    if (graph->getSize() < vertex) // check if vertex number is bigger than graph return false
+        return false;
+
     auto iter = visit->at(vertex);
     iter = true;
     bool temp;
@@ -136,12 +145,6 @@ bool Kruskal(Graph* graph)
     map<int, int> *MAP = new map<int, int>;
     map<int, int>::iterator iter;
 
-    // int **VERTEX = new int *[SIZE];
-    // for (int i = 0; i < SIZE; i++)
-    // {
-    //     VERTEX[i] = new int[SIZE];
-    //     memset(VERTEX[i], 0, sizeof(int) * SIZE);
-    // }
     int VERTEX[SIZE][SIZE];
     //initial all the array into 0
     for (int i = 0; i < SIZE; i++)
@@ -260,17 +263,37 @@ bool Kruskal(Graph* graph)
     fout << "=====================" << endl
          << endl;
 
-    // delete[] VERTEX;
+    delete MAP;
     delete[] Parent;
     delete LIST;
     fout.close();
     return true;
 }
 
-// bool Dijkstra(Graph* graph, int vertex)
-// {
+bool Dijkstra(Graph* graph, int vertex)
+{
+    if(graph->getSize()<vertex) //check if vertex number is bigger than graph return false
+        return false;
 
-// }
+    int SIZE = graph->getSize(); //get the size of graph
+    vector<bool> VISITED(SIZE, false);
+    vector<int> DISTANCE(SIZE, MAX);
+    vector<int> PATH(SIZE, 0);
+    map<int, int> *Adjacent = new map<int, int>;
+    graph->getAdjacentEdges(vertex, Adjacent);
+    auto iter = Adjacent->begin();
+    while(iter!=Adjacent->end()){
+        int ToV = iter->first;
+        int Weight = iter->second;
+        iter++;
+    }
+
+
+    // Adjacent->erase(6);
+
+    delete Adjacent;
+    return true;
+}
 
 // bool Bellmanford(Graph* graph, int s_vertex, int e_vertex)
 // {
