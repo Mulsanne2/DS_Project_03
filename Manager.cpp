@@ -23,9 +23,10 @@ void Manager::run(const char* command_txt){
 		fout<<"[ERROR] command file open error!"<<endl;
 		return;
 	}
-	
-	char* str=NULL;
-	char* str2=NULL;
+
+	char *str = NULL;
+	char *str2 = NULL;
+	char *str3 = NULL;
 	char buf[129]={0};
 
 	while(fin.getline(buf, 128))
@@ -100,8 +101,23 @@ void Manager::run(const char* command_txt){
 				continue;
 			}
 			int Startvertex = stoi(str2);
-			if (!mDIJKSTRA(Startvertex)) // mDFS_R
+			if (!mDIJKSTRA(Startvertex)) //DIJKSTRA
 				printErrorCode(700);
+		}
+
+		else if (strcmp(str, "BELLMANFORD") == 0)
+		{
+			str2 = strtok(NULL, " ");
+			str3 = strtok(NULL, " ");
+			if (str2 == NULL || str3 == NULL) // check start vertex
+			{
+				printErrorCode(800);
+				continue;
+			}
+			int Startvertex = stoi(str2);
+			int Endvertex = stoi(str3);
+			if (!mBELLMANFORD(Startvertex, Endvertex)) // DIJKSTRA
+				printErrorCode(800);
 		}
 	}	
 	fin.close();
@@ -285,7 +301,7 @@ bool Manager::mDIJKSTRA(int vertex)
 bool Manager::mKRUSKAL()
 {
 	//check if graph exist
-	if(!graph)
+	if(!graph2)
 		return false;
 
 	if(Kruskal(graph2)) //Kruskal
@@ -294,14 +310,22 @@ bool Manager::mKRUSKAL()
 		return false;
 }
 
-// bool Manager::mBELLMANFORD(int s_vertex, int e_vertex)
-// {
+bool Manager::mBELLMANFORD(int s_vertex, int e_vertex)
+{
 
-// }
+	if (!graph) // check if graph exist
+		return false;
+	else if (s_vertex < 0 || e_vertex < 0) // check vertex is available
+		return false;
+
+	if (Bellmanford(graph, s_vertex, e_vertex)) //Bellmanford
+		return true;
+	return false;
+}
 
 // bool Manager::mFLOYD()
 // {
-
+	
 // }
 
 void Manager::printErrorCode(int n)

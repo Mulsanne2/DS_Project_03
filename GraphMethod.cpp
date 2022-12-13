@@ -275,7 +275,10 @@ bool Dijkstra(Graph* graph, int vertex)
     if(graph->getSize()<=vertex) //check if vertex number is bigger than graph return false
         return false;
 
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    ofstream fout;
+    fout.open("log.txt", ios::app);
+
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq; //declare priority queue
 
     int SIZE = graph->getSize(); //get the size of graph
     vector<bool> VISITED(SIZE, false); //initialize VISITED
@@ -292,8 +295,10 @@ bool Dijkstra(Graph* graph, int vertex)
         int curWeight = pq.top().first;
         pq.pop();
 
-        if (curWeight < 0) // dijkstra algorithm can't have negative weight
+        if (curWeight < 0){ // dijkstra algorithm can't have negative weight
+            fout.close();
             return false;
+        }
 
         VISITED[curVertex] = true;
 
@@ -304,7 +309,7 @@ bool Dijkstra(Graph* graph, int vertex)
             int ToV = iter->first;
             int Weight = iter->second;
 
-            if(DISTANCE[curVertex]+Weight<DISTANCE[ToV]){
+            if(DISTANCE[curVertex]+Weight<DISTANCE[ToV]){ //if it has shorter distance
                 DISTANCE[ToV] = DISTANCE[curVertex] + Weight;
                 PATH[ToV] = curVertex;
                 pq.push(make_pair(DISTANCE[ToV], ToV));
@@ -315,14 +320,18 @@ bool Dijkstra(Graph* graph, int vertex)
     }
 
     cout << "====== Dijkstra =======" << endl;
-    cout << "startvertex: " << endl;
+    fout << "====== Dijkstra =======" << endl;
+    cout << "startvertex: " << vertex << endl;
+    fout << "startvertex: " << vertex << endl;
     for (int i = 0; i < SIZE;i++){
         if(i==vertex) //check if vertex is startpoint
             continue;
 
         cout << "[" << i << "] ";
+        fout << "[" << i << "] ";
         if(VISITED[i]==false){ //check it's vertex isn't visited
             cout << "x" << endl;
+            fout << "x" << endl;
         }
         else{
             int temp = i;
@@ -333,25 +342,141 @@ bool Dijkstra(Graph* graph, int vertex)
                 temp = PATH[temp];
             }
             cout << vertex;
+            fout << vertex;
 
             while(!STACK.empty()){
                 int pVertex = STACK.top();
                 STACK.pop();
                 cout << " -> " << pVertex;
+                fout << " -> " << pVertex;
             }
             cout << " (" << DISTANCE[i] << ") " << endl;
+            fout << " (" << DISTANCE[i] << ") " << endl;
         }
     }
-    cout << "=====================" << endl;
+    cout << "=====================" << endl
+         << endl;
+    fout << "=====================" << endl
+         << endl;
 
+    fout.close();
     delete Adjacent;
     return true;
 }
 
-// bool Bellmanford(Graph* graph, int s_vertex, int e_vertex)
-// {
+bool Bellmanford(Graph* graph, int s_vertex, int e_vertex)
+{
+    if (graph->getSize() <= s_vertex || graph->getSize() <= e_vertex)
+        return false;
 
-// }
+    ofstream fout;
+    fout.open("log.txt", ios::app);
+    int SIZE = graph->getSize();
+    vector<int> DISTANCE(SIZE, MAX); //intitialize DISTANCE
+    vector<int> PATH(SIZE, -1); //initialize PATH
+    DISTANCE[s_vertex] = 0;
+
+    map<int, int> *Adjacent = new map<int, int>;
+    graph->getAdjacentEdges(s_vertex, Adjacent);
+
+    auto iter = Adjacent->begin();
+    while (iter != Adjacent->end()) //initialize distance and path from start vertex
+    {
+        int ToV = iter->first;
+        int Weight = iter->second;
+        DISTANCE[ToV] = Weight;
+        PATH[ToV] = s_vertex;
+        iter++;
+    }
+
+    vector<pair<pair<int, int>, int>> EDGES;
+    for (int i = 0; i < SIZE; i++) //get all the edges
+    {
+        Adjacent->clear();
+        graph->getAdjacentEdges(i, Adjacent);
+        iter = Adjacent->begin();
+        while (iter != Adjacent->end()) //insert all the edges in vector in (i) vertex
+        {
+            int tovertex = iter->first;
+            int Weight = iter->second;
+            if(tovertex==s_vertex){ //check if destination vertex is start vertex
+                iter++;
+                continue;
+            }
+            EDGES.push_back(make_pair(make_pair(i, tovertex), Weight));
+            iter++;
+        }
+    }
+
+    for (int k = 1; k < SIZE-1;k++){ //repeat n-2 times
+        vector<pair<pair<int, int>, int>>::iterator iter2;
+        for (iter2 = EDGES.begin(); iter2 != EDGES.end(); iter2++)
+        {
+            int fromvertex = iter2->first.first;
+            int tovertex = iter2->first.second;
+            int Length = iter2->second;
+
+            if(DISTANCE[fromvertex]+Length<DISTANCE[tovertex]){ //if new path is shorter than previous path
+                DISTANCE[tovertex] = DISTANCE[fromvertex] + Length;
+                PATH[tovertex] = fromvertex;
+            }
+        }
+    }
+    vector<int> DISTANCE2(DISTANCE); //declare DISTANCE2 to store distance until n-1
+    vector<pair<pair<int, int>, int>>::iterator iter2;
+    for (iter2 = EDGES.begin(); iter2 != EDGES.end(); iter2++) //repeat one more time to find negative cycle exists
+    {
+        int fromvertex = iter2->first.first;
+        int tovertex = iter2->first.second;
+        int Length = iter2->second;
+
+        if (DISTANCE[fromvertex] + Length < DISTANCE[tovertex]) // if new path is shorter than previous path
+        {
+            DISTANCE[tovertex] = DISTANCE[fromvertex] + Length;
+            PATH[tovertex] = fromvertex;
+        }
+    }
+    if(DISTANCE!=DISTANCE2) //check if graph has negative cycle
+        return false;
+
+    cout << "====== Bellman-Ford =======" << endl;
+    fout << "====== Bellman-Ford =======" << endl;
+
+    if(DISTANCE[e_vertex]==MAX){ //if two vertex isn't connected
+        cout << "x" << endl;
+        fout << "x" << endl;
+    }
+    else{ //if two vertex is connected
+        int temp = e_vertex;
+        stack<int> STACK;
+        while (temp != s_vertex) // push vertex in stack until start vertex
+        {
+            STACK.push(temp);
+            temp = PATH[temp];
+        }
+        cout << s_vertex;
+        fout << s_vertex;
+        while (!STACK.empty()) //print in reverse
+        {
+            int pVertex = STACK.top();
+            STACK.pop();
+            cout << " -> " << pVertex;
+            fout << " -> " << pVertex;
+        }
+        cout << endl;
+        fout << endl;
+        cout << "cost: " << DISTANCE[e_vertex] << endl;
+        fout << "cost: " << DISTANCE[e_vertex] << endl;
+    }
+    cout << "=====================" << endl
+         << endl;
+    fout << "=====================" << endl
+         << endl;
+
+    fout.close();
+    delete Adjacent;
+    return true;
+}
 
 // bool FLOYD(Graph* graph)
 // {
