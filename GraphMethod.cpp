@@ -237,8 +237,13 @@ bool Kruskal(Graph* graph)
     }
 
     //check if graph isn't connected
-    if(count!=1)
+    if(count!=1){
+        delete MAP;
+        delete[] Parent;
+        delete LIST;
+        fout.close();
         return false;
+    }
 
     //print the result
     cout << "====== Kruskal =======" << endl;
@@ -366,7 +371,9 @@ bool Dijkstra(Graph* graph, int vertex)
 
 bool Bellmanford(Graph* graph, int s_vertex, int e_vertex)
 {
-    if (graph->getSize() <= s_vertex || graph->getSize() <= e_vertex)
+    if (graph->getSize() <= s_vertex || graph->getSize() <= e_vertex) //check if s_vertex and e_vertex is correct
+        return false;
+    else if(s_vertex==e_vertex) // check if start vertex and end vertex is same
         return false;
 
     ofstream fout;
@@ -478,10 +485,86 @@ bool Bellmanford(Graph* graph, int s_vertex, int e_vertex)
     return true;
 }
 
-// bool FLOYD(Graph* graph)
-// {
+bool FLOYD(Graph* graph)
+{
+    //get all the edges from graph and make matrix
+    ofstream fout;
+    fout.open("log.txt", ios::app);
+    int SIZE = graph->getSize();
+    vector<vector<int>> V(SIZE,vector<int>(SIZE, MAX));
 
-// }
+    map<int, int> *Adjacent = new map<int, int>;
+    map<int, int>::iterator iter;
+    // vector<pair<pair<int, int>, int>> EDGES;
+    for (int i = 0; i < SIZE;i++)
+    {
+        V[i][i] = 0;
+    }
+    for (int i = 0; i < SIZE; i++) // get all the edges
+    {
+        Adjacent->clear();
+        graph->getAdjacentEdges(i, Adjacent);
+        iter = Adjacent->begin();
+        while (iter != Adjacent->end()) // insert all the edges in vector in (i) vertex
+        {
+            int tovertex = iter->first;
+            int Weight = iter->second;
+            V[i][tovertex] = Weight;
+            // EDGES.push_back(make_pair(make_pair(i, tovertex), Weight));
+            iter++;
+        }
+    }
+    for (int k = 0; k < SIZE; k++)
+    {
+        for (int i = 0; i < SIZE; i++)
+        {
+            for (int j = 0; j < SIZE; j++)
+                V[i][j] = min(V[i][j], V[i][k] + V[k][j]);
+        }
+    }
+
+    //check if vertex has negative cycle
+    for (int i = 0; i < SIZE; i++)
+    {
+        if(V[i][i]==-1)
+            return false; //return false
+    }
+
+    cout << "======== FLOYD =========" << endl;
+    fout << "======== FLOYD =========" << endl;
+    cout << "\t";
+    fout << "\t";
+    for (int i = 0; i < SIZE;i++){
+        cout << "[" << i << "]";
+        fout << "[" << i << "]";
+    }
+    cout << endl;
+    fout << endl;
+    for (int i = 0; i < SIZE;i++){
+        cout << "[" << i << "]\t";
+        fout << "[" << i << "]\t";
+        for (int j = 0; j < SIZE; j++){
+            if (V[i][j]==MAX){
+                cout << "x\t";
+                fout << "x\t";
+            }
+            else{
+                cout << V[i][j] << "\t";
+                fout << V[i][j] << "\t";
+            }
+        }
+        cout << endl;
+        fout << endl;
+    }
+    cout << "=====================" << endl
+         << endl;
+    fout << "=====================" << endl
+         << endl;
+
+    fout.close();
+    delete Adjacent;
+    return true;
+}
 
 void InsertionSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
 {   

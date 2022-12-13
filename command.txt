@@ -1,4 +1,4 @@
-LOAD graph_M.txt
+LOAD graph_L2.txt
 PRINT
 BFS 0
 DFS 0
@@ -6,3 +6,4 @@ DFS_R 2
 KRUSKAL
 DIJKSTRA 5
 BELLMANFORD 0 6
+FLOYD

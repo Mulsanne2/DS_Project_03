@@ -11,7 +11,7 @@ private:
 
 public:	
 	ListGraph(bool type, int size);
-	~ListGraph();
+	virtual ~ListGraph();
 		
 	void getAdjacentEdges(int vertex, map<int, int>* m);
 	void insertEdge(int from, int to, int weight);

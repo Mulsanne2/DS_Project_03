@@ -25,7 +25,7 @@ protected:
 
 public:
 	Graph(bool type, int size);
-	~Graph();
+	virtual ~Graph();
 
 	bool getType();
 	int getSize();

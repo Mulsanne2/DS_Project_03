@@ -9,7 +9,7 @@ private:
 
 public:
 	MatrixGraph(bool type, int size);
-	~MatrixGraph();	
+	virtual ~MatrixGraph();	
 		
 	void getAdjacentEdges(int vertex, map<int, int>* m);
 	void insertEdge(int from, int to, int weight);

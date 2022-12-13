@@ -9,8 +9,10 @@ Manager::Manager()
 
 Manager::~Manager()
 {
-	if(load)
-		// delete graph;
+	if(load){
+		delete graph;
+		delete graph2;
+	}
 	fout.close();
 }
 
@@ -119,6 +121,12 @@ void Manager::run(const char* command_txt){
 			if (!mBELLMANFORD(Startvertex, Endvertex)) // DIJKSTRA
 				printErrorCode(800);
 		}
+
+		else if (strcmp(str, "FLOYD") == 0)
+		{
+			if (!mFLOYD()) // KRUSKAL
+				printErrorCode(900);
+		}
 	}	
 	fin.close();
 }
@@ -128,8 +136,7 @@ bool Manager::LOAD(char* filename)
 	char buf[129] = {0};
 	string buf2;
 	bool graphType = 0;
-	if(graph) //check if graph already exists
-		return false;
+	load = 1;
 
 	ifstream openGraph;
 	openGraph.open(filename);
@@ -225,6 +232,7 @@ bool Manager::LOAD(char* filename)
 		}
 	}
 
+	openGraph.close();
 	return true;
 }
 
@@ -323,10 +331,16 @@ bool Manager::mBELLMANFORD(int s_vertex, int e_vertex)
 	return false;
 }
 
-// bool Manager::mFLOYD()
-// {
-	
-// }
+bool Manager::mFLOYD()
+{
+	if(!graph)
+		return false;
+
+	if(FLOYD(graph)) //FLOYD function
+		return true;
+	else
+		return false;
+}
 
 void Manager::printErrorCode(int n)
 { // ERROR CODE PRINT
