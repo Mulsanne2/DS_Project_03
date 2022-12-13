@@ -272,24 +272,77 @@ bool Kruskal(Graph* graph)
 
 bool Dijkstra(Graph* graph, int vertex)
 {
-    if(graph->getSize()<vertex) //check if vertex number is bigger than graph return false
+    if(graph->getSize()<=vertex) //check if vertex number is bigger than graph return false
         return false;
 
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
     int SIZE = graph->getSize(); //get the size of graph
-    vector<bool> VISITED(SIZE, false);
-    vector<int> DISTANCE(SIZE, MAX);
-    vector<int> PATH(SIZE, 0);
+    vector<bool> VISITED(SIZE, false); //initialize VISITED
+    vector<int> DISTANCE(SIZE, MAX); //intitialize DISTANCE
+    vector<int> PATH(SIZE, 0); //initialize PATH
+    pq.push(make_pair(0,vertex));
+    DISTANCE[vertex] = 0;
+    VISITED[vertex] = true;
     map<int, int> *Adjacent = new map<int, int>;
-    graph->getAdjacentEdges(vertex, Adjacent);
-    auto iter = Adjacent->begin();
-    while(iter!=Adjacent->end()){
-        int ToV = iter->first;
-        int Weight = iter->second;
-        iter++;
+
+    while(!pq.empty())
+    {
+        int curVertex = pq.top().second;
+        int curWeight = pq.top().first;
+        pq.pop();
+
+        if (curWeight < 0) // dijkstra algorithm can't have negative weight
+            return false;
+
+        VISITED[curVertex] = true;
+
+        graph->getAdjacentEdges(curVertex, Adjacent); //get adjacent edges from current vertex
+        auto iter = Adjacent->begin();
+        while (iter != Adjacent->end())
+        {
+            int ToV = iter->first;
+            int Weight = iter->second;
+
+            if(DISTANCE[curVertex]+Weight<DISTANCE[ToV]){
+                DISTANCE[ToV] = DISTANCE[curVertex] + Weight;
+                PATH[ToV] = curVertex;
+                pq.push(make_pair(DISTANCE[ToV], ToV));
+            }
+
+            iter++;
+        }
     }
 
+    cout << "====== Dijkstra =======" << endl;
+    cout << "startvertex: " << endl;
+    for (int i = 0; i < SIZE;i++){
+        if(i==vertex) //check if vertex is startpoint
+            continue;
 
-    // Adjacent->erase(6);
+        cout << "[" << i << "] ";
+        if(VISITED[i]==false){ //check it's vertex isn't visited
+            cout << "x" << endl;
+        }
+        else{
+            int temp = i;
+            stack<int> STACK;
+            while (temp != vertex) //push vertex in stack until start vertex
+            {
+                STACK.push(temp);
+                temp = PATH[temp];
+            }
+            cout << vertex;
+
+            while(!STACK.empty()){
+                int pVertex = STACK.top();
+                STACK.pop();
+                cout << " -> " << pVertex;
+            }
+            cout << " (" << DISTANCE[i] << ") " << endl;
+        }
+    }
+    cout << "=====================" << endl;
 
     delete Adjacent;
     return true;
@@ -325,7 +378,7 @@ void InsertionSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
 void QuickSort(vector<pair<int, pair<int, int>>> *LIST, int start, int end)
 {
     if(start<end){
-        if(end-start+1<=6){
+        if(end-start+1<=6){ //if size is less than 6, use quick sort
             InsertionSort(LIST, start, end);
         }
         else{
