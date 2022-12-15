@@ -3,6 +3,7 @@
 Manager::Manager()
 {
 	graph = nullptr;
+	graph2 = nullptr;
 	fout.open("log.txt", ios::app);
 	load = 0;
 }
@@ -127,6 +128,16 @@ void Manager::run(const char* command_txt){
 			if (!mFLOYD()) // KRUSKAL
 				printErrorCode(900);
 		}
+
+		else if (strcmp(str, "EXIT") == 0)
+		{
+			return; //exit run
+		}
+		
+		else{
+			fout << "Wrong Command" << endl
+				 << endl;
+		}
 	}	
 	fin.close();
 }
@@ -136,8 +147,11 @@ bool Manager::LOAD(char* filename)
 	char buf[129] = {0};
 	string buf2;
 	bool graphType = 0;
-	load = 1;
-
+	
+	if(load==1){ //if graph is already exist, then erase before graph
+		delete graph;
+		delete graph2;
+	}
 	ifstream openGraph;
 	openGraph.open(filename);
 
@@ -173,6 +187,7 @@ bool Manager::LOAD(char* filename)
 		graph = new MatrixGraph(graphType, Size);
 
 	graph2 = new MatrixGraph(1, Size);
+	load = 1; //set load into 1
 
 	//insert graph is List
 	if(graphType==0){
@@ -253,8 +268,10 @@ bool Manager::mBFS(int vertex)
 		return false;
 	else if (vertex < 0)
 		return false;
-	BFS(graph2, vertex);
-	return true;
+	if(BFS(graph2, vertex))
+		return true;
+	else
+		return false;
 }
 
 bool Manager::mDFS(int vertex)
@@ -263,8 +280,10 @@ bool Manager::mDFS(int vertex)
 		return false;
 	else if(vertex<0)
 		return false;
-	DFS(graph2, vertex);
-	return true;
+	if(DFS(graph2, vertex))
+		return true;
+	else
+		return false;
 }
 
 
@@ -274,6 +293,8 @@ bool Manager::mDFS_R(int vertex)
 		return false;
 	else if (vertex < 0)
 		return false;
+	else if (graph->getSize() <= vertex)
+		return false;
 
 	vector<bool> *visited=new vector<bool>;
 	for (int i = 0; i < graph->getSize();i++)
@@ -281,12 +302,8 @@ bool Manager::mDFS_R(int vertex)
 
 	// print DFS_R
 	fout << "======== DFS_R ========" << endl;
-	cout << "======== DFS_R ========" << endl;
 	fout << "startvertex: " << vertex << endl;
-	cout << "startvertex: " << vertex << endl;
 	DFS_R(graph2, visited, vertex, &fout);
-	cout << "\n=====================" << endl
-		 << endl;
 	fout << "\n=====================" << endl
 		 << endl;
 	
@@ -333,7 +350,7 @@ bool Manager::mBELLMANFORD(int s_vertex, int e_vertex)
 
 bool Manager::mFLOYD()
 {
-	if(!graph)
+	if (!graph) // check if graph exist
 		return false;
 
 	if(FLOYD(graph)) //FLOYD function
@@ -348,11 +365,6 @@ void Manager::printErrorCode(int n)
 	fout<<n<<endl;
 	fout << "=======================" << endl
 		 << endl;
-
-	cout << "======== ERROR ========" << endl;
-	cout << n << endl;
-	cout << "=======================" << endl
-		 << endl;
 }
 
 void Manager::printSuccessCode(string str)
@@ -361,10 +373,5 @@ void Manager::printSuccessCode(string str)
 	fout << "=========" << str << "=========" << endl;
 	fout << "SUCCESS" << endl;
 	fout << "=======================" << endl
-		 << endl;
-
-	cout << "=========" << str << "=========" << endl;
-	cout << "SUCCESS" << endl;
-	cout << "=======================" << endl
 		 << endl;
 }

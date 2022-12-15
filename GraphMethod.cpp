@@ -2,7 +2,7 @@
 
 bool BFS(Graph* graph, int vertex)
 {
-    if (graph->getSize() < vertex) // check if vertex number is bigger than graph return false
+    if (graph->getSize() <= vertex) // check if vertex number is bigger than graph return false
         return false;
 
     ofstream fout;
@@ -20,11 +20,8 @@ bool BFS(Graph* graph, int vertex)
 
     // print BFS
     fout << "======== BFS ========" << endl;
-    cout << "======== BFS ========" << endl;
     fout << "startvertex: " << vertex << endl;
-    cout << "startvertex: " << vertex << endl;
     fout << vertex;
-    cout << vertex;
 
     visited[vertex] = true;
 
@@ -37,15 +34,12 @@ bool BFS(Graph* graph, int vertex)
         {
             if (visited[iter->first] == false)
             {
-                cout << " -> " << iter->first;
                 fout << " -> " << iter->first;
                 Q.push(iter->first); //push every vertex into queue
                 visited[iter->first] = true;
             }
         }
     }
-    cout << "\n=====================" << endl
-         << endl;
     fout << "\n=====================" << endl
          << endl;
     delete Ad; //delete map
@@ -56,7 +50,7 @@ bool BFS(Graph* graph, int vertex)
 
 bool DFS(Graph* graph, int vertex)
 {
-    if (graph->getSize() < vertex) // check if vertex number is bigger than graph return false
+    if (graph->getSize() <= vertex) // check if vertex number is bigger than graph return false
         return false;
 
     ofstream fout;
@@ -75,11 +69,8 @@ bool DFS(Graph* graph, int vertex)
 
     //print DFS
     fout << "======== DFS ========" << endl;
-    cout << "======== DFS ========" << endl;
     fout << "startvertex: " << vertex << endl;
-    cout << "startvertex: " << vertex << endl;
     fout << vertex;
-    cout << vertex;
 
     while (!S.empty())
     {
@@ -92,7 +83,6 @@ bool DFS(Graph* graph, int vertex)
         {
             if (visited[iter->first] == false)
             {
-                cout << " -> " << iter->first;
                 fout << " -> " << iter->first;
                 visited[iter->first] = true;
                 S.push(CurNode);     // push back the CurNode before new Vertex
@@ -101,8 +91,6 @@ bool DFS(Graph* graph, int vertex)
             }
         }
     }
-    cout << "\n=====================" << endl
-         << endl;
     fout << "\n=====================" << endl
          << endl;
     delete Ad;
@@ -114,20 +102,18 @@ bool DFS(Graph* graph, int vertex)
 bool DFS_R(Graph *graph, vector<bool> *visit, int vertex, ofstream *fout)
 {
 
-    if (graph->getSize() < vertex) // check if vertex number is bigger than graph return false
+    if (graph->getSize() <= vertex) // check if vertex number is bigger than graph return false
         return false;
 
     auto iter = visit->at(vertex);
     iter = true;
     bool temp;
-    cout << vertex;
     *fout << vertex;
     map<int, int> *Ad = new map<int, int>;
     graph->getAdjacentEdges(vertex, Ad); //get the adjacent edge of vertex
     for (map<int, int>::iterator iter2 = Ad->begin(); iter2 != Ad->end(); iter2++){
         temp = visit->at(iter2->first);
         if(!temp){
-            cout << " -> ";
             *fout << " -> ";
             DFS_R(graph, visit, iter2->first, fout); // call DFS_R recursive
         }
@@ -246,25 +232,18 @@ bool Kruskal(Graph* graph)
     }
 
     //print the result
-    cout << "====== Kruskal =======" << endl;
     fout << "====== Kruskal =======" << endl;
     for (int i = 0; i < SIZE; i++)
     {
-        cout << "[" << i << "] ";
         fout << "[" << i << "] ";
         for (int j = 0; j < SIZE; j++){
             if(VERTEX2[i][j]!=0){
-                cout << j << "(" << VERTEX2[i][j] << ") ";
                 fout << j << "(" << VERTEX2[i][j] << ") ";
             }
         }
-        cout << endl;
         fout << endl;
     }
-    cout << "cost: " << LENGTH << endl;
     fout << "cost: " << LENGTH << endl;
-    cout << "=====================" << endl
-         << endl;
     fout << "=====================" << endl
          << endl;
 
@@ -302,6 +281,7 @@ bool Dijkstra(Graph* graph, int vertex)
 
         if (curWeight < 0){ // dijkstra algorithm can't have negative weight
             fout.close();
+            delete Adjacent;
             return false;
         }
 
@@ -324,18 +304,14 @@ bool Dijkstra(Graph* graph, int vertex)
         }
     }
 
-    cout << "====== Dijkstra =======" << endl;
     fout << "====== Dijkstra =======" << endl;
-    cout << "startvertex: " << vertex << endl;
     fout << "startvertex: " << vertex << endl;
     for (int i = 0; i < SIZE;i++){
         if(i==vertex) //check if vertex is startpoint
             continue;
 
-        cout << "[" << i << "] ";
         fout << "[" << i << "] ";
         if(VISITED[i]==false){ //check it's vertex isn't visited
-            cout << "x" << endl;
             fout << "x" << endl;
         }
         else{
@@ -346,21 +322,16 @@ bool Dijkstra(Graph* graph, int vertex)
                 STACK.push(temp);
                 temp = PATH[temp];
             }
-            cout << vertex;
             fout << vertex;
 
             while(!STACK.empty()){
                 int pVertex = STACK.top();
                 STACK.pop();
-                cout << " -> " << pVertex;
                 fout << " -> " << pVertex;
             }
-            cout << " (" << DISTANCE[i] << ") " << endl;
             fout << " (" << DISTANCE[i] << ") " << endl;
         }
     }
-    cout << "=====================" << endl
-         << endl;
     fout << "=====================" << endl
          << endl;
 
@@ -444,13 +415,15 @@ bool Bellmanford(Graph* graph, int s_vertex, int e_vertex)
         }
     }
     if(DISTANCE!=DISTANCE2) //check if graph has negative cycle
+    {
+        fout.close();
+        delete Adjacent;
         return false;
+    }
 
-    cout << "====== Bellman-Ford =======" << endl;
     fout << "====== Bellman-Ford =======" << endl;
 
     if(DISTANCE[e_vertex]==MAX){ //if two vertex isn't connected
-        cout << "x" << endl;
         fout << "x" << endl;
     }
     else{ //if two vertex is connected
@@ -461,22 +434,16 @@ bool Bellmanford(Graph* graph, int s_vertex, int e_vertex)
             STACK.push(temp);
             temp = PATH[temp];
         }
-        cout << s_vertex;
         fout << s_vertex;
         while (!STACK.empty()) //print in reverse
         {
             int pVertex = STACK.top();
             STACK.pop();
-            cout << " -> " << pVertex;
             fout << " -> " << pVertex;
         }
-        cout << endl;
         fout << endl;
-        cout << "cost: " << DISTANCE[e_vertex] << endl;
         fout << "cost: " << DISTANCE[e_vertex] << endl;
     }
-    cout << "=====================" << endl
-         << endl;
     fout << "=====================" << endl
          << endl;
 
@@ -495,12 +462,11 @@ bool FLOYD(Graph* graph)
 
     map<int, int> *Adjacent = new map<int, int>;
     map<int, int>::iterator iter;
-    // vector<pair<pair<int, int>, int>> EDGES;
     for (int i = 0; i < SIZE;i++)
     {
         V[i][i] = 0;
     }
-    for (int i = 0; i < SIZE; i++) // get all the edges
+    for (int i = 0; i < SIZE; i++) // get all the edges and store in to Vector
     {
         Adjacent->clear();
         graph->getAdjacentEdges(i, Adjacent);
@@ -510,7 +476,6 @@ bool FLOYD(Graph* graph)
             int tovertex = iter->first;
             int Weight = iter->second;
             V[i][tovertex] = Weight;
-            // EDGES.push_back(make_pair(make_pair(i, tovertex), Weight));
             iter++;
         }
     }
@@ -526,38 +491,31 @@ bool FLOYD(Graph* graph)
     //check if vertex has negative cycle
     for (int i = 0; i < SIZE; i++)
     {
-        if(V[i][i]==-1)
+        if(V[i][i]<0){
+            fout.close();
+            delete Adjacent;
             return false; //return false
+        }
     }
 
-    cout << "======== FLOYD =========" << endl;
     fout << "======== FLOYD =========" << endl;
-    cout << "\t";
     fout << "\t";
     for (int i = 0; i < SIZE;i++){
-        cout << "[" << i << "]";
-        fout << "[" << i << "]";
+        fout << "[" << i << "]\t";
     }
-    cout << endl;
     fout << endl;
     for (int i = 0; i < SIZE;i++){
-        cout << "[" << i << "]\t";
         fout << "[" << i << "]\t";
         for (int j = 0; j < SIZE; j++){
             if (V[i][j]==MAX){
-                cout << "x\t";
                 fout << "x\t";
             }
             else{
-                cout << V[i][j] << "\t";
                 fout << V[i][j] << "\t";
             }
         }
-        cout << endl;
         fout << endl;
     }
-    cout << "=====================" << endl
-         << endl;
     fout << "=====================" << endl
          << endl;
 

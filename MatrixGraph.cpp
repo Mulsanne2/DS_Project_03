@@ -43,33 +43,25 @@ bool MatrixGraph::printGraph()
 	if( m_Size < 0 )
 		return 0;
 
-	cout << "======== PRINT========" << endl;
 	fout << "======== PRINT========" << endl;
 
 
 	fout << '\t';
 	for(int i=0; i<m_Size; i++)
 	{
-		cout<<"["<<i<<"]";
 		fout << "[" << i << "]" << '\t';
 	}
-	cout<<endl;
 	fout << endl;
 
 	for(int i=0; i<m_Size; i++)
 	{
-		cout<<"["<<i<<"]";
 		fout << "[" << i << "]";
-		for (int j = 0; j < m_Size && fout << '\t' && cout << '\t'; j++)
+		for (int j = 0; j < m_Size && fout << '\t'; j++)
 		{
-			cout<<m_Mat[i][j];
 			fout << m_Mat[i][j];
 		}
-		cout<<endl;
 		fout << endl;
 	}
-	cout << "=====================" << endl
-		 << endl;
 	fout << "=====================" << endl
 		 << endl;
 	fout.close();
